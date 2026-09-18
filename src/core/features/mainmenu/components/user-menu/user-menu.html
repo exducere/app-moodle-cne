@@ -1,0 +1,144 @@
+<ion-header class="cne-usermenu-header">
+    <ion-toolbar>
+        <ion-title>
+            <h1>
+                {{'core.user.useraccount' | translate}}
+            </h1>
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="close($event)" [ariaLabel]="'core.close' | translate">
+                <ion-icon name="fas-xmark" slot="icon-only" aria-hidden="true" />
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="cne-usermenu">
+    <ion-refresher slot="fixed" (ionRefresh)="refreshData($event.target)">
+        <ion-refresher-content pullingText="{{ 'core.pulltorefresh' | translate }}" />
+    </ion-refresher>
+    <core-loading [hideUntil]="handlersLoaded" placeholderType="column" placeholderHeight="48px">
+        @if (siteInfo) {
+            <!-- User profile summary. -->
+            <section class="cne-usermenu-profile">
+                <button type="button" class="cne-usermenu-avatar core-usermenu-profile" (click)="openUserProfile($event)"
+                    [attr.aria-label]="'core.mainmenu.cneviewprofile' | translate">
+                    <core-user-avatar [user]="user" [linkProfile]="false" />
+                </button>
+                <div class="cne-usermenu-profile-info">
+                    <p class="cne-usermenu-name">{{ user?.fullname ?? siteInfo.fullname }}</p>
+                    <core-site-logo class="cne-usermenu-sitename core-usermenu-siteinfo" siteNameMode="p" [showLogo]="false" />
+                    @if (displaySiteUrl) {
+                        <a [href]="siteUrl" core-link class="cne-usermenu-siteurl core-usermenu-siteurl">{{ siteUrl }}</a>
+                    }
+                    <button type="button" class="cne-usermenu-profile-link" (click)="openUserProfile($event)">
+                        {{ 'core.mainmenu.cneviewprofile' | translate }}
+                    </button>
+                </div>
+            </section>
+            <span class="cne-usermenu-accent" aria-hidden="true"></span>
+        }
+
+        <ion-list class="cne-usermenu-list">
+            @for (handler of handlers; track handler.name) {
+                <ng-container *ngTemplateOutlet="menuHandler; context: { handler, class: 'core-user-menu-handler', addSeparator: false }" />
+            }
+
+            @for (item of customItems; track item) {
+                <core-dynamic-component [component]="customMenuOverrideComponent" [data]="item">
+                    <core-custom-menu-item [type]="item.type" [label]="item.label" [icon]="item.icon" [url]="item.url"
+                        [extraData]="item.extraData" />
+                </core-dynamic-component>
+            }
+
+            @for (handler of accountHandlers; track handler.name; let first = $first) {
+                <ng-container
+                    *ngTemplateOutlet="menuHandler; context: { handler, class: 'core-user-account-menu-handler', addSeparator: first }" />
+            }
+
+            <ion-item button lines="none" (click)="openPreferences($event)" [attr.aria-label]="'core.settings.preferences' | translate"
+                [detail]="true" class="cne-usermenu-item core-user-menu-preferences core-user-menu-separator">
+                <span class="cne-usermenu-icon" slot="start">
+                    <ion-icon name="cne-wrench-01" aria-hidden="true" />
+                </span>
+                <ion-label>
+                    <p class="item-heading">{{ 'core.settings.preferences' | translate }}</p>
+                </ion-label>
+            </ion-item>
+
+            @if (displayContactSupport) {
+                <ion-item button lines="none" (click)="contactSupport($event)" [attr.aria-label]="'core.user.support' | translate"
+                    [detail]="true" detailIcon="open-outline" class="cne-usermenu-item core-user-menu-support">
+                    <span class="cne-usermenu-icon" slot="start">
+                        <ion-icon name="cne-mail-01-bulk" aria-hidden="true" />
+                    </span>
+                    <ion-label>
+                        <p class="item-heading">{{ 'core.user.support' | translate }}</p>
+                    </ion-label>
+                </ion-item>
+            }
+        </ion-list>
+    </core-loading>
+</ion-content>
+<ion-footer class="cne-usermenu-footer">
+    @if (displaySwitchAccount) {
+        <ion-item button lines="none" (click)="switchAccounts($event)" [detail]="true" class="cne-usermenu-item ion-text-wrap">
+            <span class="cne-usermenu-icon" slot="start">
+                <ion-icon name="cne-arrow-left-right" aria-hidden="true" />
+            </span>
+            <ion-label>
+                <p class="item-heading">{{ 'core.mainmenu.switchaccount' | translate }}</p>
+            </ion-label>
+        </ion-item>
+    }
+    <div class="cne-usermenu-logout">
+        <ion-button (click)="logout($event)" expand="block" fill="outline" color="danger"
+            [ariaLabel]="'core.mainmenu.logout' | translate" class="ion-text-wrap">
+            @if (!removeAccountOnLogout) {
+
+                <ion-icon name="fas-right-from-bracket" slot="start" aria-hidden="true" />
+                {{ 'core.mainmenu.logout' | translate }}
+
+            } @else {
+
+                <ion-icon name="cne-delete-02" slot="start" aria-hidden="true" />
+                {{ 'core.login.removeaccount' | translate }}
+
+            }
+        </ion-button>
+    </div>
+</ion-footer>
+
+<ng-template #menuHandler let-handlerUntyped="handler" let-typeClass="class" let-addSeparator="addSeparator">
+    @let handler = castHandlerType(handlerUntyped);
+
+    @if ('component' in handler) {
+        <core-dynamic-component [component]="handler.component" [data]="handler.componentData" />
+    } @else {
+        <ion-item button lines="none" (click)="handlerClicked($event, handler)"
+            [class]="['cne-usermenu-item', 'ion-text-wrap', typeClass, handler.class]"
+            [class.core-user-menu-separator]="addSeparator" [hidden]="handler.hidden"
+            [attr.aria-label]="handler.title | translate" [detail]="true">
+            @if (handler.icon) {
+                <span class="cne-usermenu-icon" slot="start">
+                    <ion-icon [name]="handler.icon" aria-hidden="true" />
+                </span>
+            }
+            <ion-label>
+                <p class="item-heading">{{ handler.title | translate }}</p>
+            </ion-label>
+            @if (handler.showBadge) {
+                <ion-badge slot="end" [hidden]="handler.loading || !handler.badge" aria-hidden="true">
+                    {{handler.badge}}
+                </ion-badge>
+                @if (handler.badge && handler.badgeA11yText) {
+                    <span class="sr-only">
+                        {{ handler.badgeA11yText | translate: {$a : handler.badge } }}
+                    </span>
+                }
+                @if (handler.loading) {
+                    <ion-spinner slot="end" [attr.aria-label]="'core.loading' | translate" />
+                }
+            }
+        </ion-item>
+    }
+</ng-template>

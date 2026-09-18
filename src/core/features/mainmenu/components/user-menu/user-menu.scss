@@ -1,0 +1,236 @@
+@use "src/theme/globals" as *;
+
+:host {
+    --cne-primary: #1C3F86;
+    --cne-secondary: #295CA6;
+    --cne-tertiary: #FFD100;
+    --cne-quaternary: #D3112A;
+    --cne-text: var(--cne-primary);
+    --cne-muted: #64748B;
+    --cne-icon-background: rgba(28, 63, 134, 0.08);
+    --cne-divider: #EEF1F5;
+    --cne-surface: var(--ion-background-color, #FFFFFF);
+}
+
+.cne-usermenu-header ion-toolbar {
+    --background: var(--cne-surface);
+    --border-width: 0 0 1px 0;
+    --border-color: var(--cne-divider);
+    --min-height: 48px;
+    --color: var(--cne-muted);
+
+    h1 {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    ion-button {
+        --color: var(--cne-muted);
+    }
+}
+
+.cne-usermenu {
+    --background: var(--cne-surface);
+}
+
+// Profile summary: compact row with avatar and user data.
+.cne-usermenu-profile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px 10px;
+}
+
+.cne-usermenu-avatar {
+    flex: 0 0 auto;
+    padding: 2px;
+    border: 2px solid var(--cne-secondary);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+
+    core-user-avatar {
+        --core-avatar-size: 52px;
+        display: block;
+    }
+}
+
+.cne-usermenu-profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+}
+
+.cne-usermenu-name {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0;
+    color: var(--cne-text);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.cne-usermenu-sitename,
+.cne-usermenu-siteurl {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cne-usermenu-sitename {
+    --core-site-logo-sitename-font: var(--mdl-typography-body-font-sm);
+    --core-site-logo-sitename-margin-bottom: 0;
+    margin-top: 2px;
+    color: var(--cne-muted);
+    font-size: 0.75rem;
+}
+
+.cne-usermenu-siteurl {
+    color: var(--cne-muted);
+    font-size: 0.7rem;
+    text-decoration: none;
+}
+
+.cne-usermenu-profile-link {
+    margin-top: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--cne-secondary);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+// Tricolor line inspired by the CNE logo arcs.
+.cne-usermenu-accent {
+    display: block;
+    height: 3px;
+    margin: 0 20px;
+    border-radius: 3px;
+    background: linear-gradient(90deg,
+        var(--cne-tertiary) 0 50%,
+        var(--cne-primary) 50% 75%,
+        var(--cne-quaternary) 75% 100%);
+}
+
+@if ($core-user-hide-siteinfo) {
+    .core-usermenu-siteinfo {
+        display: none;
+    }
+}
+
+@if ($core-user-hide-sitename) {
+    core-site-logo {
+        --core-site-logo-sitename-display: none;
+    }
+}
+
+@if ($core-user-hide-siteurl) {
+    .core-usermenu-siteurl {
+        display: none;
+    }
+}
+
+// Menu options.
+.cne-usermenu-list {
+    --ion-item-background: transparent;
+    padding: 6px 10px !important;
+    background: transparent;
+}
+
+.cne-usermenu-item {
+    --background: transparent;
+    --background-activated: var(--cne-icon-background);
+    --background-hover: var(--cne-icon-background);
+    --border-radius: 12px;
+    --detail-icon-color: var(--cne-muted);
+    --detail-icon-opacity: 0.6;
+    --inner-border-width: 0;
+    --min-height: 44px;
+    --padding-start: 8px;
+    --inner-padding-end: 4px;
+    margin: 0;
+
+    ion-label {
+        margin: 6px 0;
+    }
+
+    .item-heading {
+        color: var(--text-color);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    ion-badge {
+        --background: var(--cne-quaternary);
+        --color: var(--white);
+        border-radius: 999px;
+    }
+}
+
+.cne-usermenu-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    margin: 0 12px 0 0;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--cne-icon-background);
+    color: var(--cne-primary);
+    font-size: 1rem;
+}
+
+// Account options are separated from the rest with some space.
+.cne-usermenu-item.core-user-menu-separator {
+    margin-top: 9px;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: 8px;
+        right: 8px;
+        border-top: 1px solid var(--cne-divider);
+    }
+}
+
+// Footer.
+.cne-usermenu-footer {
+    padding: 4px 10px calc(var(--ion-safe-area-bottom, 0px) + 10px);
+    border-top: 1px solid var(--cne-divider);
+    background: var(--cne-surface);
+    box-shadow: none;
+
+    &::before {
+        display: none;
+    }
+}
+
+.cne-usermenu-logout ion-button {
+    --border-radius: 999px;
+    --border-width: 1.5px;
+    min-height: 42px;
+    margin: 4px 2px 0;
+    font-weight: 600;
+    text-transform: none;
+}
+
+:host-context(:root.dark) {
+    --cne-text: #FFFFFF;
+    --cne-muted: var(--gray-400);
+    --cne-icon-background: rgba(41, 92, 166, 0.25);
+    --cne-divider: var(--gray-800);
+
+    .cne-usermenu-icon {
+        color: #FFFFFF;
+    }
+}

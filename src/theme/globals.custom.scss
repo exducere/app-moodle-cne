@@ -1,0 +1,33 @@
+/*
+ * App Custom App variables SCSS
+ * ----------------------------------------------------------------------------
+ * Place here all custom app variables.
+ */
+
+// CNE palette.
+$cne-primary:    #1C3F86;
+$cne-secondary:  #295CA6;
+$cne-tertiary:   #FFD100;
+$cne-quaternary: #D3112A;
+
+$brand-color:  $cne-primary;
+$primary:      $cne-primary;
+$primary-dark: $cne-secondary;
+$secondary:    $cne-secondary;
+$warning:      $cne-tertiary;
+$danger:       $cne-quaternary;
+$red:          $cne-quaternary;
+$yellow:       $cne-tertiary;
+
+$colors: (
+    primary: (light: $primary, dark: $primary-dark),
+    secondary: (light: $secondary, dark: $cne-secondary),
+    tertiary: (light: $cne-tertiary),
+    success: (light: #357a32),
+    warning: (light: $warning),
+    danger: (light: $danger),
+    info: (light: $cne-secondary),
+    light: (light: #f8f9fa, dark: #282828),
+    medium: (light: #495057, dark: #e9ecef),
+    dark: (light: #282828, dark: #f8f9fa),
+);
